@@ -18,6 +18,7 @@ package com.gs.collections.kata;
 
 import com.gs.collections.api.list.MutableList;
 import com.gs.collections.api.set.MutableSet;
+import com.gs.collections.impl.block.factory.Functions;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.collections.impl.test.Verify;
@@ -32,8 +33,6 @@ public class Exercise4Test extends CompanyDomainForKata
     @Test
     public void improveGetOrders()
     {
-        // Delete this line - it's a reminder
-        Assert.fail("Improve getOrders() without breaking this test");
         Verify.assertSize(5, this.company.getOrders());
     }
 
@@ -43,8 +42,8 @@ public class Exercise4Test extends CompanyDomainForKata
     @Test
     public void findItemNames()
     {
-        MutableList<LineItem> allOrderedLineItems = null;
-        MutableSet<String> actualItemNames = null;
+        MutableList<LineItem> allOrderedLineItems = this.company.getOrders().flatCollect(Order.TO_LINE_ITEMS);
+        MutableSet<String> actualItemNames = allOrderedLineItems.collect(LineItem.TO_NAME,UnifiedSet.<String>newSet());
 
         Verify.assertInstanceOf(MutableSet.class, actualItemNames);
         Verify.assertInstanceOf(String.class, actualItemNames.getFirst());
@@ -58,7 +57,7 @@ public class Exercise4Test extends CompanyDomainForKata
     @Test
     public void findCustomerNames()
     {
-        MutableList<String> names = null;
+        MutableList<String> names = this.company.getCustomers().collect(Customer.TO_NAME);
 
         MutableList<String> expectedNames = FastList.newListWith("Fred", "Mary", "Bill");
         Assert.assertEquals(expectedNames, names);

@@ -16,6 +16,7 @@
 
 package com.gs.collections.kata;
 
+import com.gs.collections.api.block.function.Function;
 import com.gs.collections.api.block.predicate.Predicate;
 import com.gs.collections.api.list.MutableList;
 import com.gs.collections.impl.block.factory.Predicates;
@@ -55,13 +56,14 @@ public class Company
 
     public MutableList<Order> getOrders()
     {
-        Assert.fail("Refactor this code to use GS Collections as part of Exercise 4");
-        MutableList<Order> orders = FastList.newList();
-        for (Customer customer : this.customers)
-        {
-            orders.addAll(customer.getOrders());
-        }
-        return orders;
+        return this.customers.flatCollect(new Function<Customer,MutableList<Order>>(){
+
+			@Override
+			public MutableList<Order> valueOf(Customer customer) {
+				return FastList.newList(customer.getOrders());
+			}
+
+        });
     }
 
     public Customer getMostRecentCustomer()
