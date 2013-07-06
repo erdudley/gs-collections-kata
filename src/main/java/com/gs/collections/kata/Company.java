@@ -18,6 +18,7 @@ package com.gs.collections.kata;
 
 import com.gs.collections.api.block.predicate.Predicate;
 import com.gs.collections.api.list.MutableList;
+import com.gs.collections.impl.block.factory.Predicates;
 import com.gs.collections.impl.list.mutable.FastList;
 import org.junit.Assert;
 
@@ -89,7 +90,6 @@ public class Company
         /**
          * Use a {@link Predicate} to find a {@link Customer} with the name given.
          */
-        Assert.fail("Implement this method as part of Exercise 3");
-        return null;
+        return customers.detect(Predicates.attributeEqual(Customer.TO_NAME, name));
     }
 }
