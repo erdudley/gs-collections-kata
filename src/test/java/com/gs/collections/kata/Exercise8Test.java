@@ -19,8 +19,10 @@ package com.gs.collections.kata;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.gs.collections.api.block.function.Function;
 import com.gs.collections.api.block.procedure.Procedure;
 import com.gs.collections.api.multimap.list.MutableListMultimap;
+import com.gs.collections.impl.list.fixed.ArrayAdapter;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.multimap.list.FastListMultimap;
 import com.gs.collections.impl.test.Verify;
@@ -51,23 +53,14 @@ public class Exercise8Test extends CompanyDomainForKata
         /**
          * Change itemsToSuppliers to a MutableMultimap<String, Supplier>
          */
-        final MutableListMultimap<String, Supplier> itemsToSuppliers = FastListMultimap.newMultimap();
+        final MutableListMultimap<String, Supplier> itemsToSuppliers = ArrayAdapter.adapt(this.company.getSuppliers()).groupByEach(new Function<Supplier,Iterable<String>>(){
 
-        ArrayIterate.forEach(this.company.getSuppliers(), new Procedure<Supplier>()
-        {
-            @Override
-            public void value(final Supplier supplier)
-            {
-                ArrayIterate.forEach(supplier.getItemNames(), new Procedure<String>()
-                {
-                    @Override
-                    public void value(String itemName)
-                    {
-                        itemsToSuppliers.put(itemName, supplier);
-                    }
-                });
-            }
+			public Iterable<String> valueOf(Supplier supplier) {
+				return ArrayAdapter.adapt(supplier.getItemNames());
+			}
+        	
         });
+
         Verify.assertIterableSize("should be 2 suppliers for sofa", 2, itemsToSuppliers.get("sofa"));
     }
 }

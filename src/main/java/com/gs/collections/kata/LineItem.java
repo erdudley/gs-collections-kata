@@ -32,6 +32,16 @@ public class LineItem
         }
     };
 
+    public static final Function<LineItem, Double> TO_VALUE = new Function<LineItem, Double>()
+    	    {
+    	        @Override
+    	        public Double valueOf(LineItem lineItem)
+    	        {
+    	            return lineItem.value;
+    	        }
+    	    };
+
+    
     private String name;
     private final double value;
 

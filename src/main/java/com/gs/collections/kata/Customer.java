@@ -60,6 +60,28 @@ public class Customer
                 }
             };
 
+    public static final Function<Customer, MutableList<Order>> TO_ORDERS= new Function<Customer, MutableList<Order>>()
+    		{
+    			@Override
+    			public MutableList valueOf(Customer customer){
+    				return customer.getOrders();
+    			}
+    		};
+    public static final Function<Customer, Double> TO_MAX_ITEM = new Function<Customer,Double>(){
+
+		@Override
+		public Double valueOf(Customer customer) {
+			return customer.getOrders().flatCollect(new Function<Order,List<LineItem>>(){
+
+				@Override
+				public List<LineItem> valueOf(Order order) {
+					return order.getLineItems();
+				}
+				
+			}).collect(LineItem.TO_VALUE).max();
+		}
+    	
+    };
     private final String name;
     private final String city;
 

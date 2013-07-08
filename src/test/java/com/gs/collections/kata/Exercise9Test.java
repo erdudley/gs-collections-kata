@@ -17,11 +17,17 @@
 package com.gs.collections.kata;
 
 import com.gs.collections.api.block.function.Function;
+import com.gs.collections.api.block.predicate.Predicate;
 import com.gs.collections.api.list.MutableList;
 import com.gs.collections.api.map.MutableMap;
 import com.gs.collections.api.multimap.list.MutableListMultimap;
+import com.gs.collections.impl.block.factory.Functions;
+import com.gs.collections.impl.block.factory.Predicates;
+import com.gs.collections.impl.list.fixed.ArrayAdapter;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.test.Verify;
+import com.gs.collections.impl.utility.ListIterate;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,7 +39,14 @@ public class Exercise9Test extends CompanyDomainForKata
     @Test
     public void whoOrderedSaucers()
     {
-        MutableList<Customer> customersWithSaucers = null;
+        MutableList<Customer> customersWithSaucers = this.company.getCustomers().select(new Predicate<Customer>(){
+
+			@Override
+			public boolean accept(Customer customer) {
+				return customer.getOrders().flatCollect(Order.TO_LINE_ITEMS).anySatisfy(Predicates.attributeEqual(LineItem.TO_NAME, "saucer"));
+			}
+        	
+        });
         Verify.assertSize("customers with saucers", 2, customersWithSaucers);
     }
 
@@ -44,7 +57,7 @@ public class Exercise9Test extends CompanyDomainForKata
     public void ordersByCustomerUsingAsMap()
     {
         MutableMap<String, MutableList<Order>> customerNameToOrders =
-                this.company.getCustomers().toMap(null, null);
+                this.company.getCustomers().toMap(Customer.TO_NAME,Customer.TO_ORDERS);
 
         Assert.assertNotNull("customer name to orders", customerNameToOrders);
         Verify.assertSize("customer names", 3, customerNameToOrders);
@@ -59,7 +72,7 @@ public class Exercise9Test extends CompanyDomainForKata
     @Test
     public void mostExpensiveItem()
     {
-        MutableListMultimap<Double, Customer> multimap = null;
+        MutableListMultimap<Double, Customer> multimap = this.company.getCustomers().groupBy(Customer.TO_MAX_ITEM);
         Assert.assertEquals(3, multimap.size());
         Assert.assertEquals(2, multimap.keysView().size());
         Assert.assertEquals(
