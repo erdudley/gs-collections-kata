@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.gs.collections.api.bag.MutableBag;
 import com.gs.collections.api.block.function.Function;
 import com.gs.collections.api.block.predicate.Predicate;
+import com.gs.collections.impl.bag.mutable.HashBag;
 import com.gs.collections.impl.block.function.AddFunction;
 import com.gs.collections.impl.collection.mutable.CollectionAdapter;
 import com.gs.collections.impl.utility.Iterate;
@@ -64,7 +66,7 @@ public class Order
     private static int nextOrderNumber = 1;
 
     private final int orderNumber;
-    private final List<LineItem> lineItems = new ArrayList<LineItem>();
+    private final MutableBag<LineItem> lineItems = HashBag.newBag();
     private boolean isDelivered;
 
     public Order()
@@ -87,6 +89,10 @@ public class Order
     {
         return this.isDelivered;
     }
+    
+    public void addLineItems(LineItem lineItem, int occurences){
+    	this.lineItems.addOccurrences(lineItem, occurences);
+    }
 
     public void addLineItem(LineItem aLineItem)
     {
@@ -95,7 +101,7 @@ public class Order
 
     public List<LineItem> getLineItems()
     {
-        return this.lineItems;
+        return this.lineItems.toList();
     }
 
     @Override
